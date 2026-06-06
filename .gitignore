@@ -1,0 +1,14 @@
+.vs/
+bin/
+obj/
+node_modules/
+build/
+*.log
+appsettings.Development.json
+*.db-shm
+*.db-wal
+.DS_Store
+Thumbs.db
+
+*.zip
+*.db

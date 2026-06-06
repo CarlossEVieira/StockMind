@@ -1,0 +1,15 @@
+body {
+    background-color: #f1f5f9;
+}
+
+.card-hover {
+    border-radius: 12px;
+    transition: 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border: none;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}

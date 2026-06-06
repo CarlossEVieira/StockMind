@@ -1,0 +1,19 @@
+.menu-principal {
+    background: linear-gradient(90deg, #0f172a, #1e293b);
+    padding: 12px 0;
+}
+
+.navbar-brand {
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+.nav-link {
+    color: #cbd5f5 !important;
+    margin-left: 10px;
+    transition: 0.2s;
+}
+
+.nav-link:hover {
+    color: #ffffff !important;
+}
