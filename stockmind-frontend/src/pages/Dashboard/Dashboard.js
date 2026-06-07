@@ -6,25 +6,16 @@ import TituloPagina from "../../components/TituloPagina/TituloPagina";
 import MensagemSistema from "../../components/MensagemSistema/MensagemSistema";
 
 export default function Dashboard() {
-    // Dados principais dos cards
     const [dashboard, setDashboard] = useState(null);
-
-    // Alertas usados nos blocos de alertas e IA
     const [alertas, setAlertas] = useState([]);
-
-    // Movimentações recentes do estoque
     const [movimentacoes, setMovimentacoes] = useState([]);
-
-    // Mensagens visuais do sistema
     const [mensagem, setMensagem] = useState("");
     const [tipoMensagem, setTipoMensagem] = useState("sucesso");
 
-    // Carrega os dados quando a tela abre
     useEffect(() => {
         carregarDashboard();
     }, []);
 
-    // Busca dados do backend
     async function carregarDashboard() {
         try {
             const respostaDashboard = await api.get("/dashboard");
@@ -42,33 +33,76 @@ export default function Dashboard() {
         }
     }
 
-    // Apenas alertas pendentes
     const alertasPendentes = useMemo(() => {
         return alertas.filter((alerta) => !alerta.resolvido);
     }, [alertas]);
 
-    // Últimos 3 alertas pendentes
+    const totalAlertasEstoqueBaixo = useMemo(() => {
+        return alertasPendentes.filter((alerta) => alerta.tipoAlerta === "EstoqueBaixo").length;
+    }, [alertasPendentes]);
+
+    const totalAlertasDemandaAlta = useMemo(() => {
+        return alertasPendentes.filter((alerta) => alerta.tipoAlerta === "DemandaAlta").length;
+    }, [alertasPendentes]);
+
     const alertasRecentes = useMemo(() => {
         return alertasPendentes.slice(0, 3);
     }, [alertasPendentes]);
 
-    // Últimas 3 sugestões de IA
     const sugestoesIa = useMemo(() => {
         return alertasPendentes
             .filter((alerta) => alerta.sugestaoReposicaoIa)
             .slice(0, 3);
     }, [alertasPendentes]);
 
-    // Últimas 5 movimentações
     const movimentacoesRecentes = useMemo(() => {
         return movimentacoes.slice(0, 5);
     }, [movimentacoes]);
 
-    // Define cor do tipo de movimentação
+    const totalEntradas = useMemo(() => {
+        return movimentacoes
+            .filter((movimentacao) => movimentacao.tipoMovimentacao === "Entrada")
+            .reduce((total, movimentacao) => total + movimentacao.quantidade, 0);
+    }, [movimentacoes]);
+
+    const totalSaidas = useMemo(() => {
+        return movimentacoes
+            .filter((movimentacao) => movimentacao.tipoMovimentacao === "Saida")
+            .reduce((total, movimentacao) => total + movimentacao.quantidade, 0);
+    }, [movimentacoes]);
+
+    const maiorValorGrafico = Math.max(totalEntradas, totalSaidas, 1);
+    const percentualEntradas = (totalEntradas / maiorValorGrafico) * 100;
+    const percentualSaidas = (totalSaidas / maiorValorGrafico) * 100;
+
     function obterClasseTipoMovimentacao(tipoMovimentacao) {
         return tipoMovimentacao === "Entrada"
             ? "badge bg-success"
             : "badge bg-danger";
+    }
+
+    function obterClasseTipoAlerta(tipoAlerta) {
+        if (tipoAlerta === "DemandaAlta") {
+            return "badge bg-warning text-dark";
+        }
+
+        if (tipoAlerta === "EstoqueBaixo") {
+            return "badge bg-danger";
+        }
+
+        return "badge bg-secondary";
+    }
+
+    function obterTextoTipoAlerta(tipoAlerta) {
+        if (tipoAlerta === "DemandaAlta") {
+            return "Demanda alta";
+        }
+
+        if (tipoAlerta === "EstoqueBaixo") {
+            return "Estoque baixo";
+        }
+
+        return tipoAlerta || "Não informado";
     }
 
     return (
@@ -90,7 +124,7 @@ export default function Dashboard() {
                 {dashboard?.alertasPendentes > 0 && (
                     <div className="alert alert-danger d-flex justify-content-between align-items-center">
                         <span>
-                            ⚠️ Você possui {dashboard.alertasPendentes} alertas de estoque baixo.
+                            ⚠️ Você possui {dashboard.alertasPendentes} alertas pendentes no estoque.
                         </span>
                         <Link to="/alertas" className="btn btn-light btn-sm">
                             Ver alertas
@@ -125,7 +159,9 @@ export default function Dashboard() {
                             <h2 className={(dashboard?.alertasPendentes ?? 0) > 0 ? "text-danger" : "text-success"}>
                                 {dashboard?.alertasPendentes ?? 0}
                             </h2>
-                            <small className="text-muted">Itens abaixo do mínimo</small>
+                            <small className="text-muted">
+                                🔴 {totalAlertasEstoqueBaixo} estoque baixo | 🟡 {totalAlertasDemandaAlta} demanda alta
+                            </small>
                         </div>
                     </div>
 
@@ -181,7 +217,7 @@ export default function Dashboard() {
                     <div className="col-md-3">
                         <div className="card p-3 h-100">
                             <h5>⚠️ Alertas</h5>
-                            <p className="text-muted">Estoque baixo e IA</p>
+                            <p className="text-muted">Estoque baixo, demanda alta e IA</p>
                             <Link to="/alertas" className="btn btn-danger">
                                 Ver
                             </Link>
@@ -196,10 +232,20 @@ export default function Dashboard() {
 
                             {alertasRecentes.length > 0 ? (
                                 alertasRecentes.map((alerta) => (
-                                    <div key={alerta.id} className="border-start border-danger border-4 ps-3 py-2 mb-2 bg-light">
-                                        <div className="fw-bold text-danger">
+                                    <div
+                                        key={alerta.id}
+                                        className="border-start border-4 ps-3 py-2 mb-2 bg-light"
+                                    >
+                                        <div className="mb-1">
+                                            <span className={obterClasseTipoAlerta(alerta.tipoAlerta)}>
+                                                {obterTextoTipoAlerta(alerta.tipoAlerta)}
+                                            </span>
+                                        </div>
+
+                                        <div className="fw-bold">
                                             {alerta.mensagem}
                                         </div>
+
                                         <small className="text-muted">
                                             Quantidade atual: {alerta.quantidadeAtual}
                                         </small>
@@ -218,15 +264,65 @@ export default function Dashboard() {
                             {sugestoesIa.length > 0 ? (
                                 sugestoesIa.map((alerta) => (
                                     <div key={alerta.id} className="border rounded p-2 mb-2 bg-light">
+                                        <div className="mb-1">
+                                            <span className={obterClasseTipoAlerta(alerta.tipoAlerta)}>
+                                                {obterTextoTipoAlerta(alerta.tipoAlerta)}
+                                            </span>
+                                        </div>
+
                                         <div className="fw-bold mb-1">
                                             {alerta.mensagem}
                                         </div>
+
                                         <small>{alerta.sugestaoReposicaoIa}</small>
                                     </div>
                                 ))
                             ) : (
                                 <p className="text-muted mb-0">Sem sugestões no momento.</p>
                             )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="row mt-4">
+                    <div className="col-12">
+                        <div className="card p-3">
+                            <h5>📈 Entradas x Saídas</h5>
+                            <p className="text-muted">
+                                Comparativo geral das movimentações registradas no estoque.
+                            </p>
+
+                            <div className="mb-3">
+                                <div className="d-flex justify-content-between">
+                                    <strong>Entradas</strong>
+                                    <span>{totalEntradas} unidades</span>
+                                </div>
+
+                                <div className="progress" style={{ height: "25px" }}>
+                                    <div
+                                        className="progress-bar bg-success"
+                                        style={{ width: `${percentualEntradas}%` }}
+                                    >
+                                        {totalEntradas}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div className="d-flex justify-content-between">
+                                    <strong>Saídas</strong>
+                                    <span>{totalSaidas} unidades</span>
+                                </div>
+
+                                <div className="progress" style={{ height: "25px" }}>
+                                    <div
+                                        className="progress-bar bg-danger"
+                                        style={{ width: `${percentualSaidas}%` }}
+                                    >
+                                        {totalSaidas}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
