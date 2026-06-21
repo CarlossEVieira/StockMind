@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace StockMind.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreateSqlServer : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,14 +15,14 @@ namespace StockMind.Infrastructure.Migrations
                 name: "Produtos",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Nome = table.Column<string>(type: "TEXT", nullable: false),
-                    Descricao = table.Column<string>(type: "TEXT", nullable: true),
-                    Categoria = table.Column<string>(type: "TEXT", nullable: true),
-                    Localizacao = table.Column<string>(type: "TEXT", nullable: false),
-                    Ativo = table.Column<bool>(type: "INTEGER", nullable: false),
-                    DataCadastro = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Categoria = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Localizacao = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ativo = table.Column<bool>(type: "bit", nullable: false),
+                    DataCadastro = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,10 +33,10 @@ namespace StockMind.Infrastructure.Migrations
                 name: "Vendas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    DataVenda = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Observacao = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DataVenda = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Observacao = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -47,12 +47,12 @@ namespace StockMind.Infrastructure.Migrations
                 name: "ProdutosEstoque",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ProdutoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Tamanho = table.Column<string>(type: "TEXT", nullable: false),
-                    Quantidade = table.Column<int>(type: "INTEGER", nullable: false),
-                    QuantidadeMinimaAlerta = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProdutoId = table.Column<int>(type: "int", nullable: false),
+                    Tamanho = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantidade = table.Column<int>(type: "int", nullable: false),
+                    QuantidadeMinimaAlerta = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,15 +69,16 @@ namespace StockMind.Infrastructure.Migrations
                 name: "AlertasEstoque",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ProdutoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ProdutoEstoqueId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Mensagem = table.Column<string>(type: "TEXT", nullable: false),
-                    QuantidadeAtual = table.Column<int>(type: "INTEGER", nullable: false),
-                    SugestaoReposicaoIa = table.Column<string>(type: "TEXT", nullable: true),
-                    Resolvido = table.Column<bool>(type: "INTEGER", nullable: false),
-                    DataAlerta = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProdutoId = table.Column<int>(type: "int", nullable: false),
+                    ProdutoEstoqueId = table.Column<int>(type: "int", nullable: false),
+                    Mensagem = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    QuantidadeAtual = table.Column<int>(type: "int", nullable: false),
+                    SugestaoReposicaoIa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Resolvido = table.Column<bool>(type: "bit", nullable: false),
+                    DataAlerta = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TipoAlerta = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -92,23 +93,22 @@ namespace StockMind.Infrastructure.Migrations
                         name: "FK_AlertasEstoque_Produtos_ProdutoId",
                         column: x => x.ProdutoId,
                         principalTable: "Produtos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "MovimentacoesEstoque",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ProdutoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ProdutoEstoqueId = table.Column<int>(type: "INTEGER", nullable: false),
-                    TipoMovimentacao = table.Column<string>(type: "TEXT", nullable: false),
-                    OrigemMovimentacao = table.Column<string>(type: "TEXT", nullable: false),
-                    Quantidade = table.Column<int>(type: "INTEGER", nullable: false),
-                    Observacao = table.Column<string>(type: "TEXT", nullable: true),
-                    DataMovimentacao = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProdutoId = table.Column<int>(type: "int", nullable: false),
+                    ProdutoEstoqueId = table.Column<int>(type: "int", nullable: false),
+                    TipoMovimentacao = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrigemMovimentacao = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantidade = table.Column<int>(type: "int", nullable: false),
+                    Observacao = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DataMovimentacao = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -123,20 +123,19 @@ namespace StockMind.Infrastructure.Migrations
                         name: "FK_MovimentacoesEstoque_Produtos_ProdutoId",
                         column: x => x.ProdutoId,
                         principalTable: "Produtos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "VendaItens",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    VendaId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ProdutoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ProdutoEstoqueId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Quantidade = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VendaId = table.Column<int>(type: "int", nullable: false),
+                    ProdutoId = table.Column<int>(type: "int", nullable: false),
+                    ProdutoEstoqueId = table.Column<int>(type: "int", nullable: false),
+                    Quantidade = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -151,8 +150,7 @@ namespace StockMind.Infrastructure.Migrations
                         name: "FK_VendaItens_Produtos_ProdutoId",
                         column: x => x.ProdutoId,
                         principalTable: "Produtos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_VendaItens_Vendas_VendaId",
                         column: x => x.VendaId,
