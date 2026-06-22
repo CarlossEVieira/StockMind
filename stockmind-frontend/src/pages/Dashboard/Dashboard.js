@@ -1,9 +1,29 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+
 import api from "../../services/api";
 import MenuPrincipal from "../../components/MenuPrincipal/MenuPrincipal";
 import TituloPagina from "../../components/TituloPagina/TituloPagina";
 import MensagemSistema from "../../components/MensagemSistema/MensagemSistema";
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
 export default function Dashboard() {
     const [dashboard, setDashboard] = useState(null);
@@ -71,9 +91,33 @@ export default function Dashboard() {
             .reduce((total, movimentacao) => total + movimentacao.quantidade, 0);
     }, [movimentacoes]);
 
-    const maiorValorGrafico = Math.max(totalEntradas, totalSaidas, 1);
-    const percentualEntradas = (totalEntradas / maiorValorGrafico) * 100;
-    const percentualSaidas = (totalSaidas / maiorValorGrafico) * 100;
+    const dadosGraficoEntradasSaidas = {
+        labels: ["Entradas", "Saídas"],
+        datasets: [
+            {
+                label: "Quantidade",
+                data: [totalEntradas, totalSaidas],
+                borderWidth: 1
+            }
+        ]
+    };
+
+    const opcoesGraficoEntradasSaidas = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: "top"
+            },
+            title: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    };
 
     function obterClasseTipoMovimentacao(tipoMovimentacao) {
         return tipoMovimentacao === "Entrada"
@@ -292,36 +336,14 @@ export default function Dashboard() {
                                 Comparativo geral das movimentações registradas no estoque.
                             </p>
 
-                            <div className="mb-3">
-                                <div className="d-flex justify-content-between">
-                                    <strong>Entradas</strong>
-                                    <span>{totalEntradas} unidades</span>
-                                </div>
-
-                                <div className="progress" style={{ height: "25px" }}>
-                                    <div
-                                        className="progress-bar bg-success"
-                                        style={{ width: `${percentualEntradas}%` }}
-                                    >
-                                        {totalEntradas}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div className="d-flex justify-content-between">
-                                    <strong>Saídas</strong>
-                                    <span>{totalSaidas} unidades</span>
-                                </div>
-
-                                <div className="progress" style={{ height: "25px" }}>
-                                    <div
-                                        className="progress-bar bg-danger"
-                                        style={{ width: `${percentualSaidas}%` }}
-                                    >
-                                        {totalSaidas}
-                                    </div>
-                                </div>
+                            <div style={{ height: "320px" }}>
+                                <Bar
+                                    data={dadosGraficoEntradasSaidas}
+                                    options={{
+                                        ...opcoesGraficoEntradasSaidas,
+                                        maintainAspectRatio: false
+                                    }}
+                                />
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 # 🚀 StockMind
 
-Sistema inteligente de gestão de estoque desenvolvido com **.NET 8**, **React** e **Inteligência Artificial (Google Gemini)**.
+Sistema inteligente de gestão de estoque desenvolvido com **ASP.NET Core**, **React**, **SQL Server**, **Dapper** e **Inteligência Artificial (Google Gemini)**.
 
 O StockMind foi criado para auxiliar empresas no controle de estoque, vendas, movimentações e reposições inteligentes, oferecendo informações em tempo real para tomada de decisão.
 
@@ -8,13 +8,16 @@ O StockMind foi criado para auxiliar empresas no controle de estoque, vendas, mo
 
 ## 📸 Demonstração
 
-Em breve:
+### Funcionalidades disponíveis
 
-* Dashboard Inteligente
+* Dashboard Gerencial
 * Gestão de Produtos
 * Controle de Estoque por Tamanho
+* Controle de Entradas e Vendas
 * Alertas Inteligentes
 * Sugestões de Reposição com IA
+* Relatórios Avançados com Dapper
+* Procedures, Views e Functions no SQL Server
 
 ---
 
@@ -26,7 +29,8 @@ O objetivo do projeto é transformar o controle de estoque tradicional em uma so
 * Identificar estoques críticos
 * Gerar alertas automáticos
 * Sugerir reposições utilizando IA
-* Antecipar necessidades futuras com base na demanda
+* Monitorar demanda de produtos
+* Fornecer indicadores para tomada de decisão
 
 ---
 
@@ -62,9 +66,9 @@ E gera sugestões como:
 
 ### Estoque
 
-* Controle por tamanho
+* Controle por tamanho (PP, P, M, G e GG)
 * Entrada de estoque
-* Baixa automática
+* Baixa automática de estoque
 * Histórico de movimentações
 
 ### Vendas
@@ -72,20 +76,28 @@ E gera sugestões como:
 * Registro de vendas
 * Atualização automática do estoque
 * Controle de saída por produto
+* Geração automática de movimentações
 
-### Alertas
+### Alertas Inteligentes
 
 * Estoque baixo
-* Sugestão automática de reposição
-* Integração com IA
+* Demanda alta
+* Sugestão automática de reposição utilizando IA
+* Controle de alertas pendentes
 
 ### Dashboard
 
-* Total de produtos
+* Total de produtos ativos
 * Total em estoque
 * Alertas pendentes
 * Menor estoque
-* Movimentações recentes
+
+### Relatórios
+
+* Produtos com estoque baixo
+* Produto mais vendido
+* Total de produtos ativos
+* Cálculo de reposição
 
 ---
 
@@ -96,28 +108,59 @@ O projeto segue arquitetura em camadas:
 ```text
 StockMind.API
 │
+├── StockMind.Api
 ├── StockMind.Application
 ├── StockMind.Domain
 ├── StockMind.Infrastructure
 │
+├── BancoDeDados
+│   ├── Procedures
+│   ├── Functions
+│   ├── Views
+│   └── Scripts
+│
 └── stockmind-frontend
 ```
 
-### Backend
+---
 
-* .NET 8
+## Backend
+
+* ASP.NET Core 9
 * Entity Framework Core
-* SQLite
+* Dapper
+* SQL Server
 * Swagger
 
-### Frontend
+### SQL Server
+
+#### Views
+
+* vw_ProdutosEstoqueBaixo
+
+#### Functions
+
+* fn_CalcularQuantidadeReposicao
+
+#### Stored Procedures
+
+* sp_ListarProdutosEstoqueBaixo
+* sp_RegistrarEntradaEstoque
+* sp_RegistrarVendaEstoque
+* sp_ProdutoMaisVendido
+
+---
+
+## Frontend
 
 * React
 * React Router
 * Axios
 * Bootstrap
 
-### IA
+---
+
+## Inteligência Artificial
 
 * Google Gemini API
 
@@ -130,7 +173,13 @@ StockMind.API
 ```bash
 dotnet restore
 dotnet build
-dotnet run
+dotnet run --project StockMind.Api
+```
+
+### Swagger
+
+```text
+http://localhost:5180/swagger
 ```
 
 ### Frontend
@@ -142,23 +191,33 @@ npm start
 
 ---
 
-## 🔮 Roadmap
+## 📚 Conceitos Aplicados
 
-### Em desenvolvimento
+* Arquitetura em Camadas
+* Repository Pattern
+* Dependency Injection
+* Entity Framework Core
+* Dapper
+* SQL Server
+* Stored Procedures
+* Views
+* Functions
+* REST API
+* Swagger
+* Integração com Inteligência Artificial
 
-* [ ] Alerta de demanda alta
-* [ ] Dashboard analítico
-* [ ] Gráficos de movimentação
-* [ ] Controle de usuários
-* [ ] Login e autenticação
-* [ ] Deploy em nuvem
+---
 
-### Futuro
+## 🔮 Evoluções Futuras
 
-* [ ] Previsão de estoque utilizando IA
-* [ ] Aplicativo mobile
-* [ ] Integração com ERP
-* [ ] Multiempresa
+* Controle de usuários
+* Login e autenticação
+* Dashboard analítico com gráficos
+* Deploy em nuvem
+* Aplicativo mobile
+* Integração com ERP
+* Multiempresa
+* Previsão de estoque utilizando IA
 
 ---
 
@@ -169,4 +228,4 @@ Carlos Eduardo de Oliveira Vieira
 GitHub:
 https://github.com/CarlossEVieira
 
-Projeto desenvolvido para aprendizado de desenvolvimento Full Stack, arquitetura de software e integração com Inteligência Artificial.
+Projeto desenvolvido para aprendizado de desenvolvimento Full Stack, arquitetura de software, SQL Server, Dapper e integração com Inteligência Artificial.
