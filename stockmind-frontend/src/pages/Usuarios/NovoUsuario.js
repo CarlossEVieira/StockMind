@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import api from "../../services/api";
 
@@ -8,89 +8,43 @@ import TituloPagina from "../../components/TituloPagina/TituloPagina";
 import BotaoVoltar from "../../components/BotaoVoltar/BotaoVoltar";
 import MensagemSistema from "../../components/MensagemSistema/MensagemSistema";
 
-export default function EditarProduto() {
-
-    const { id } = useParams();
+export default function NovoUsuario() {
 
     const navigate = useNavigate();
 
     const [nome, setNome] = useState("");
-    const [descricao, setDescricao] = useState("");
-    const [categoria, setCategoria] = useState("");
-    const [localizacao, setLocalizacao] = useState("");
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
+    const [perfil, setPerfil] = useState("Administrador");
 
     const [mensagem, setMensagem] = useState("");
     const [tipoMensagem, setTipoMensagem] = useState("sucesso");
 
-    useEffect(() => {
-
-        async function carregarProduto() {
-
-            try {
-
-                const resposta =
-                    await api.get(`/produtos/${id}`);
-
-                setNome(resposta.data.nome);
-                setDescricao(
-                    resposta.data.descricao || ""
-                );
-                setCategoria(
-                    resposta.data.categoria || ""
-                );
-                setLocalizacao(
-                    resposta.data.localizacao
-                );
-
-            }
-            catch (erro) {
-
-                console.error(
-                    "Erro ao carregar produto:",
-                    erro
-                );
-
-                setTipoMensagem("erro");
-
-                setMensagem(
-                    "Erro ao carregar produto."
-                );
-            }
-        }
-
-        carregarProduto();
-
-    }, [id]);
-
-    async function atualizarProduto(evento) {
+    async function salvarUsuario(evento) {
 
         evento.preventDefault();
 
-        const produto = {
-            nome,
-            descricao,
-            categoria,
-            localizacao
-        };
-
         try {
 
-            const resposta =
-                await api.put(
-                    `/produtos/${id}`,
-                    produto
-                );
+            await api.post(
+                "/usuarios",
+                {
+                    nome,
+                    email,
+                    senha,
+                    perfil
+                }
+            );
 
             setTipoMensagem("sucesso");
 
             setMensagem(
-                resposta.data ||
-                "Produto atualizado com sucesso."
+                "Usuário cadastrado com sucesso."
             );
 
             setTimeout(() => {
 
-                navigate("/produtos");
+                navigate("/usuarios");
 
             }, 1500);
 
@@ -98,7 +52,7 @@ export default function EditarProduto() {
         catch (erro) {
 
             console.error(
-                "Erro ao atualizar produto:",
+                "Erro ao cadastrar usuário:",
                 erro
             );
 
@@ -116,7 +70,7 @@ export default function EditarProduto() {
             else {
 
                 setMensagem(
-                    "Erro ao atualizar produto."
+                    "Erro ao cadastrar usuário."
                 );
             }
         }
@@ -136,13 +90,11 @@ export default function EditarProduto() {
             >
 
                 <TituloPagina
-                    titulo="Editar Produto"
-                    subtitulo="Atualize os dados do produto"
+                    titulo="Novo Usuário"
+                    subtitulo="Cadastro de usuários"
                 />
 
-                <div className="mb-3">
-                    <BotaoVoltar />
-                </div>
+                <BotaoVoltar />
 
                 <MensagemSistema
                     tipo={tipoMensagem}
@@ -153,27 +105,25 @@ export default function EditarProduto() {
                 />
 
                 <div
-                    className="
-                        card
-                        shadow-sm
-                    "
+                    className="card shadow-sm mt-4"
                 >
 
                     <div className="card-body">
 
                         <form
-                            onSubmit={
-                                atualizarProduto
-                            }
+                            onSubmit={salvarUsuario}
                         >
 
                             <div className="mb-3">
 
-                                <label className="form-label">
+                                <label
+                                    className="form-label"
+                                >
                                     Nome
                                 </label>
 
                                 <input
+                                    type="text"
                                     className="form-control"
                                     value={nome}
                                     onChange={(evento) =>
@@ -181,69 +131,94 @@ export default function EditarProduto() {
                                             evento.target.value
                                         )
                                     }
+                                    required
                                 />
 
                             </div>
 
                             <div className="mb-3">
 
-                                <label className="form-label">
-                                    Descrição
+                                <label
+                                    className="form-label"
+                                >
+                                    E-mail
                                 </label>
 
                                 <input
+                                    type="email"
                                     className="form-control"
-                                    value={descricao}
+                                    value={email}
                                     onChange={(evento) =>
-                                        setDescricao(
+                                        setEmail(
                                             evento.target.value
                                         )
                                     }
+                                    required
                                 />
 
                             </div>
 
                             <div className="mb-3">
 
-                                <label className="form-label">
-                                    Categoria
+                                <label
+                                    className="form-label"
+                                >
+                                    Senha
                                 </label>
 
                                 <input
+                                    type="password"
                                     className="form-control"
-                                    value={categoria}
+                                    value={senha}
                                     onChange={(evento) =>
-                                        setCategoria(
+                                        setSenha(
                                             evento.target.value
                                         )
                                     }
+                                    required
                                 />
 
                             </div>
 
                             <div className="mb-4">
 
-                                <label className="form-label">
-                                    Localização
+                                <label
+                                    className="form-label"
+                                >
+                                    Perfil
                                 </label>
 
-                                <input
+                                <select
                                     className="form-control"
-                                    value={localizacao}
+                                    value={perfil}
                                     onChange={(evento) =>
-                                        setLocalizacao(
+                                        setPerfil(
                                             evento.target.value
                                         )
                                     }
-                                />
+                                >
+
+                                    <option value="Administrador">
+                                        Administrador
+                                    </option>
+
+                                    <option value="Gestor">
+                                        Gestor
+                                    </option>
+
+                                    <option value="Operador">
+                                        Operador
+                                    </option>
+
+                                </select>
 
                             </div>
 
                             <button
-                                className="btn btn-warning"
                                 type="submit"
+                                className="btn btn-success"
                             >
-                                Atualizar Produto
+                                Salvar Usuário
                             </button>
 
                         </form>

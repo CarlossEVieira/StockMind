@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+
 import api from "../../services/api";
+
 import MenuPrincipal from "../../components/MenuPrincipal/MenuPrincipal";
 import TituloPagina from "../../components/TituloPagina/TituloPagina";
 import BotaoVoltar from "../../components/BotaoVoltar/BotaoVoltar";
@@ -76,7 +78,6 @@ export default function EntradaEstoque() {
             setEstoquesProduto([]);
         } catch (erro) {
             console.error("Erro ao registrar entrada:", erro);
-
             setTipoMensagem("erro");
 
             if (erro.response && erro.response.data) {
@@ -95,7 +96,14 @@ export default function EntradaEstoque() {
         <>
             <MenuPrincipal />
 
-            <div className="container">
+            <div
+                className="container-fluid"
+                style={{
+                    marginLeft: "260px",
+                    width: "calc(100% - 260px)",
+                    padding: "25px"
+                }}
+            >
                 <TituloPagina
                     titulo="Entrada de Estoque"
                     subtitulo="Adicione quantidade a um tamanho específico"
@@ -111,71 +119,88 @@ export default function EntradaEstoque() {
                     onFechar={() => setMensagem("")}
                 />
 
-                <form onSubmit={registrarEntrada}>
-                    <div className="mb-3">
-                        <label className="form-label">Produto</label>
-                        <select
-                            className="form-control"
-                            value={produtoId}
-                            onChange={(evento) => setProdutoId(evento.target.value)}
-                        >
-                            <option value="">Selecione um produto</option>
-                            {produtos.map((produto) => (
-                                <option key={produto.id} value={produto.id}>
-                                    {produto.nome}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                <div className="card shadow-sm">
+                    <div className="card-body">
+                        <form onSubmit={registrarEntrada}>
+                            <div className="mb-3">
+                                <label className="form-label">Produto</label>
+                                <select
+                                    className="form-control"
+                                    value={produtoId}
+                                    onChange={(evento) =>
+                                        setProdutoId(evento.target.value)
+                                    }
+                                >
+                                    <option value="">Selecione um produto</option>
 
-                    <div className="mb-3">
-                        <label className="form-label">Tamanho</label>
-                        <select
-                            className="form-control"
-                            value={tamanho}
-                            onChange={(evento) => setTamanho(evento.target.value)}
-                            disabled={!produtoId}
-                        >
-                            <option value="">Selecione um tamanho</option>
-                            {estoquesProduto.map((estoque) => (
-                                <option key={estoque.id} value={estoque.tamanho}>
-                                    {estoque.tamanho}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {estoqueSelecionado && (
-                        <div className="mb-3">
-                            <div className="alert alert-info">
-                                Estoque atual: <strong>{estoqueSelecionado.quantidade}</strong>
+                                    {produtos.map((produto) => (
+                                        <option key={produto.id} value={produto.id}>
+                                            {produto.nome}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
-                        </div>
-                    )}
 
-                    <div className="mb-3">
-                        <label className="form-label">Quantidade de Entrada</label>
-                        <input
-                            type="number"
-                            className="form-control"
-                            value={quantidadeEntrada}
-                            onChange={(evento) => setQuantidadeEntrada(evento.target.value)}
-                        />
+                            <div className="mb-3">
+                                <label className="form-label">Tamanho</label>
+                                <select
+                                    className="form-control"
+                                    value={tamanho}
+                                    onChange={(evento) =>
+                                        setTamanho(evento.target.value)
+                                    }
+                                    disabled={!produtoId}
+                                >
+                                    <option value="">Selecione um tamanho</option>
+
+                                    {estoquesProduto.map((estoque) => (
+                                        <option key={estoque.id} value={estoque.tamanho}>
+                                            {estoque.tamanho}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {estoqueSelecionado && (
+                                <div className="alert alert-info">
+                                    Estoque atual:{" "}
+                                    <strong>{estoqueSelecionado.quantidade}</strong>
+                                </div>
+                            )}
+
+                            <div className="mb-3">
+                                <label className="form-label">
+                                    Quantidade de Entrada
+                                </label>
+
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={quantidadeEntrada}
+                                    onChange={(evento) =>
+                                        setQuantidadeEntrada(evento.target.value)
+                                    }
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="form-label">Observação</label>
+
+                                <input
+                                    className="form-control"
+                                    value={observacao}
+                                    onChange={(evento) =>
+                                        setObservacao(evento.target.value)
+                                    }
+                                />
+                            </div>
+
+                            <button className="btn btn-warning" type="submit">
+                                Registrar Entrada
+                            </button>
+                        </form>
                     </div>
-
-                    <div className="mb-3">
-                        <label className="form-label">Observação</label>
-                        <input
-                            className="form-control"
-                            value={observacao}
-                            onChange={(evento) => setObservacao(evento.target.value)}
-                        />
-                    </div>
-
-                    <button className="btn btn-warning" type="submit">
-                        Registrar Entrada
-                    </button>
-                </form>
+                </div>
             </div>
         </>
     );

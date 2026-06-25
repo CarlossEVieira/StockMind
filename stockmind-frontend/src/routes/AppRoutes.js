@@ -9,6 +9,9 @@ import Alertas from "../pages/Alertas/Alertas";
 import EditarProduto from "../pages/EditarProduto/EditarProduto";
 import Login from "../pages/Login/Login";
 import RotaPrivada from "./RotaPrivada";
+import Usuarios from "../pages/Usuarios/Usuarios";
+import NovoUsuario from "../pages/Usuarios/NovoUsuario";
+import EditarUsuario from "../pages/Usuarios/EditarUsuario";
 
 export default function AppRoutes() {
     return (
@@ -86,6 +89,33 @@ export default function AppRoutes() {
                             <Alertas />
                         </RotaPrivada>
                     }
+                />
+                <Route
+                    path="/usuarios"
+                    element={
+                        <RotaPrivada>
+                            <Usuarios />
+                        </RotaPrivada>
+                    }
+                    
+                />
+                <Route
+                    path="/usuarios/novo"
+                    element={
+                        <RotaPrivada>
+                            <NovoUsuario />
+                        </RotaPrivada>
+                    }
+                    
+                />
+                <Route
+                    path="/usuarios/editar/:id"
+                    element={
+                        <RotaPrivada>
+                            <EditarUsuario />
+                        </RotaPrivada>
+                    }
+                    
                 />
             </Routes>
         </BrowserRouter>

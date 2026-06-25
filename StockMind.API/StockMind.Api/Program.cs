@@ -77,6 +77,9 @@ builder.Services.AddScoped<IEstoqueDapperRepository,
 builder.Services.AddScoped<IVendaDapperRepository,
     VendaDapperRepository>();
 
+builder.Services.AddScoped<IUsuarioRepository, 
+    UsuarioRepository>();
+
 // =====================================================
 // REPOSITORY DAPPER
 // Responsável por consultas utilizando:
@@ -110,6 +113,8 @@ builder.Services.AddScoped<DashboardService>();
 
 // Serviço responsável pelos relatórios
 builder.Services.AddScoped<RelatorioService>();
+
+builder.Services.AddScoped<UsuarioService>();
 
 
 // =====================================================

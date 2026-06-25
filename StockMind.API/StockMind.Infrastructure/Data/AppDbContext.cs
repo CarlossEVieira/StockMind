@@ -15,6 +15,7 @@ namespace StockMind.Infrastructure.Data
         public DbSet<AlertaEstoque> AlertasEstoque { get; set; }
         public DbSet<Venda> Vendas { get; set; }
         public DbSet<VendaItem> VendaItens { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +26,7 @@ namespace StockMind.Infrastructure.Data
             modelBuilder.Entity<AlertaEstoque>().ToTable("AlertasEstoque");
             modelBuilder.Entity<Venda>().ToTable("Vendas");
             modelBuilder.Entity<VendaItem>().ToTable("VendaItens");
+            modelBuilder.Entity<Usuario>().ToTable("Usuarios");
 
             // Produto -> Estoques
             modelBuilder.Entity<Produto>()
