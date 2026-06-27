@@ -49,5 +49,43 @@ namespace StockMind.Infrastructure.Repositories
                 },
                 commandType: CommandType.StoredProcedure);
         }
+
+                /// <summary>
+        /// Executa uma reposição completa.
+        /// Reaproveita a mesma Procedure
+        /// para cada tamanho informado.
+        /// </summary>
+        public async Task RegistrarReposicaoCompletaAsync(
+            int produtoId,
+            Dictionary<string, int> tamanhos,
+            string observacao)
+        {
+            // Cria conexão com SQL Server
+            using var conexao =
+                new SqlConnection(
+                    configuration.GetConnectionString("DefaultConnection"));
+
+            // Percorre todos os tamanhos enviados
+            foreach (var item in tamanhos)
+            {
+                // Ignora entradas zeradas
+                if (item.Value <= 0)
+                {
+                    continue;
+                }
+
+                // Executa a mesma Procedure
+                await conexao.ExecuteAsync(
+                    "sp_RegistrarEntradaEstoque",
+                    new
+                    {
+                        ProdutoId = produtoId,
+                        Tamanho = item.Key,
+                        Quantidade = item.Value,
+                        Observacao = observacao
+                    },
+                    commandType: CommandType.StoredProcedure);
+            }
+        }
     }
 }

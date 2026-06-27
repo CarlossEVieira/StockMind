@@ -11,5 +11,15 @@ namespace StockMind.Application.Interfaces
             string tamanho,
             int quantidade,
             string observacao);
+
+        /// <summary>
+        /// Executa a reposição completa
+        /// utilizando a mesma Procedure
+        /// para cada tamanho informado.
+        /// </summary>
+        Task RegistrarReposicaoCompletaAsync(
+            int produtoId,
+            Dictionary<string, int> tamanhos,
+            string observacao);
     }
 }

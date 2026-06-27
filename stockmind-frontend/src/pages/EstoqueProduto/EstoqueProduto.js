@@ -1,31 +1,42 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import api from "../../services/api";
 
 import MenuPrincipal from "../../components/MenuPrincipal/MenuPrincipal";
+import Layout from "../../components/Layout/Layout";
 import TituloPagina from "../../components/TituloPagina/TituloPagina";
 import BotaoVoltar from "../../components/BotaoVoltar/BotaoVoltar";
 
 export default function EstoqueProduto() {
 
+    // Id do produto recebido pela rota
     const { produtoId } = useParams();
 
-    const [estoques, setEstoques] = useState([]);
+    // Lista dos estoques do produto
+    const [estoques, setEstoques] =
+        useState([]);
 
+    // Carrega os estoques ao abrir a tela
     useEffect(() => {
+
         carregarEstoques();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [produtoId]);
 
+    // Busca os tamanhos cadastrados
     async function carregarEstoques() {
 
         try {
 
             const resposta =
-                await api.get(`/estoques/produto/${produtoId}`);
+                await api.get(
+                    `/estoques/produto/${produtoId}`
+                );
 
-            setEstoques(resposta.data);
+            setEstoques(
+                resposta.data
+            );
 
         }
         catch (erro) {
@@ -42,42 +53,71 @@ export default function EstoqueProduto() {
     return (
 
         <>
+
             <MenuPrincipal />
 
-            <div
-                className="container-fluid"
-                style={{
-                    marginLeft: "260px",
-                    width: "calc(100% - 260px)",
-                    padding: "25px"
-                }}
-            >
+            <Layout>
 
                 <TituloPagina
                     titulo={`Estoque do Produto ${produtoId}`}
                     subtitulo="Visualização por tamanho"
                 />
 
-                <div className="d-flex justify-content-between align-items-center mb-3">
+                {/* Botões superiores */}
+
+                <div
+                    className="
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        mb-4
+                    "
+                >
 
                     <BotaoVoltar />
 
+                    <Link
+                        to={`/reposicao/${produtoId}`}
+                        className="btn btn-success"
+                    >
+                        + Reposição Completa
+                    </Link>
+
                 </div>
+
+                {/* Card principal */}
 
                 <div className="card shadow-sm">
 
                     <div className="card-body">
 
-                        <table className="table table-hover align-middle">
+                        <table
+                            className="
+                                table
+                                table-hover
+                                align-middle
+                            "
+                        >
 
                             <thead>
 
                                 <tr>
 
-                                    <th>ID Estoque</th>
-                                    <th>Tamanho</th>
-                                    <th>Quantidade</th>
-                                    <th>Quantidade Mínima</th>
+                                    <th>
+                                        ID Estoque
+                                    </th>
+
+                                    <th>
+                                        Tamanho
+                                    </th>
+
+                                    <th>
+                                        Quantidade
+                                    </th>
+
+                                    <th>
+                                        Quantidade Mínima
+                                    </th>
 
                                 </tr>
 
@@ -86,38 +126,62 @@ export default function EstoqueProduto() {
                             <tbody>
 
                                 {
-                                    estoques.map(estoque => (
 
-                                        <tr key={estoque.id}>
+                                    estoques.map(
 
-                                            <td>{estoque.id}</td>
+                                        estoque => (
 
-                                            <td>{estoque.tamanho}</td>
+                                            <tr
+                                                key={estoque.id}
+                                            >
 
-                                            <td>{estoque.quantidade}</td>
+                                                <td>
+                                                    {estoque.id}
+                                                </td>
 
-                                            <td>
-                                                {estoque.quantidadeMinimaAlerta}
+                                                <td>
+                                                    {estoque.tamanho}
+                                                </td>
+
+                                                <td>
+                                                    {estoque.quantidade}
+                                                </td>
+
+                                                <td>
+                                                    {
+                                                        estoque.quantidadeMinimaAlerta
+                                                    }
+                                                </td>
+
+                                            </tr>
+
+                                        )
+
+                                    )
+
+                                }
+
+                                {
+
+                                    estoques.length === 0 &&
+
+                                    (
+
+                                        <tr>
+
+                                            <td
+                                                colSpan="4"
+                                                className="text-center"
+                                            >
+
+                                                Nenhum estoque encontrado.
+
                                             </td>
 
                                         </tr>
 
-                                    ))
-                                }
+                                    )
 
-                                {
-                                    estoques.length === 0 &&
-
-                                    <tr>
-
-                                        <td
-                                            colSpan="4"
-                                            className="text-center"
-                                        >
-                                            Nenhum estoque encontrado.
-                                        </td>
-
-                                    </tr>
                                 }
 
                             </tbody>
@@ -128,7 +192,7 @@ export default function EstoqueProduto() {
 
                 </div>
 
-            </div>
+            </Layout>
 
         </>
 

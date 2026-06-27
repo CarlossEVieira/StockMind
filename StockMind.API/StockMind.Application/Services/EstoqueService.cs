@@ -110,5 +110,66 @@ namespace StockMind.Application.Services
                     entradaEstoqueDataTransferObject.QuantidadeEntrada,
                     entradaEstoqueDataTransferObject.Observacao ?? string.Empty);
         }
+
+        /// <summary>
+        /// Registra uma reposição completa utilizando
+        /// a mesma Procedure para todos os tamanhos.
+        /// </summary>
+        public async Task RegistrarReposicaoCompletaAsync(
+            ReposicaoCompletaDataTransferObject reposicaoCompletaDataTransferObject)
+        {
+            // Verifica se o produto existe
+            var produto =
+                await produtoRepository.ObterPorIdAsync(
+                    reposicaoCompletaDataTransferObject.ProdutoId);
+
+            if (produto == null)
+            {
+                throw new Exception(
+                    $"Produto com id {reposicaoCompletaDataTransferObject.ProdutoId} não encontrado.");
+            }
+
+            // Tamanhos permitidos
+            var tamanhosPermitidos =
+                new List<string>
+                {
+                    "PP",
+                    "P",
+                    "M",
+                    "G",
+                    "GG"
+                };
+
+            // Percorre todos os tamanhos enviados
+            foreach (var item in reposicaoCompletaDataTransferObject.Itens)
+            {
+                // Ignora quantidades zeradas
+                if (item.Quantidade <= 0)
+                {
+                    continue;
+                }
+
+                // Padroniza o tamanho
+                var tamanhoFormatado =
+                    item.Tamanho
+                        .Trim()
+                        .ToUpper();
+
+                // Valida o tamanho
+                if (!tamanhosPermitidos.Contains(tamanhoFormatado))
+                {
+                    throw new Exception(
+                        $"O tamanho {item.Tamanho} é inválido.");
+                }
+
+                // Reutiliza a mesma Procedure já existente
+                await estoqueDapperRepository
+                    .RegistrarEntradaEstoqueAsync(
+                        reposicaoCompletaDataTransferObject.ProdutoId,
+                        tamanhoFormatado,
+                        item.Quantidade,
+                        reposicaoCompletaDataTransferObject.Observacao ?? string.Empty);
+            }
+        }
     }
 }

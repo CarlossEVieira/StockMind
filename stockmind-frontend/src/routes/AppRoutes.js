@@ -12,6 +12,7 @@ import RotaPrivada from "./RotaPrivada";
 import Usuarios from "../pages/Usuarios/Usuarios";
 import NovoUsuario from "../pages/Usuarios/NovoUsuario";
 import EditarUsuario from "../pages/Usuarios/EditarUsuario";
+import ReposicaoCompleta from "../pages/ReposicaoCompleta/ReposicaoCompleta";
 
 export default function AppRoutes() {
     return (
@@ -53,6 +54,11 @@ export default function AppRoutes() {
                             <EditarProduto />
                         </RotaPrivada>
                     }
+                />
+
+                <Route
+                    path="/reposicao/:produtoId"
+                    element={<ReposicaoCompleta />}
                 />
 
                 <Route

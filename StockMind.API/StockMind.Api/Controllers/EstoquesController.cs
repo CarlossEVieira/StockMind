@@ -8,32 +8,69 @@ namespace StockMind.Api.Controllers
     [Route("api/[controller]")]
     public class EstoquesController : ControllerBase
     {
+        // Service de estoque
         private readonly EstoqueService estoqueService;
 
-        public EstoquesController(EstoqueService estoqueService)
+        // Construtor
+        public EstoquesController(
+            EstoqueService estoqueService)
         {
             this.estoqueService = estoqueService;
         }
 
+        // Lista os tamanhos de um produto
         [HttpGet("produto/{produtoId}")]
-        public async Task<IActionResult> ListarPorProdutoIdAsync(int produtoId)
+        public async Task<IActionResult> ListarPorProdutoIdAsync(
+            int produtoId)
         {
-            var estoques = await estoqueService.ListarPorProdutoIdAsync(produtoId);
+            var estoques =
+                await estoqueService.ListarPorProdutoIdAsync(
+                    produtoId);
+
             return Ok(estoques);
         }
 
+        // Registra entrada individual
         [HttpPost("entrada")]
-        public async Task<IActionResult> RegistrarEntradaAsync([FromBody] EntradaEstoqueDataTransferObject entradaEstoqueDataTransferObject)
+        public async Task<IActionResult> RegistrarEntradaAsync(
+            [FromBody]
+            EntradaEstoqueDataTransferObject entradaEstoqueDataTransferObject)
         {
             try
             {
-                await estoqueService.RegistrarEntradaAsync(entradaEstoqueDataTransferObject);
-                return Ok("Entrada de estoque registrada com sucesso.");
+                await estoqueService.RegistrarEntradaAsync(
+                    entradaEstoqueDataTransferObject);
+
+                return Ok(
+                    "Entrada de estoque registrada com sucesso.");
             }
             catch (Exception excecao)
             {
-                return BadRequest(excecao.Message);
+                return BadRequest(
+                    excecao.Message);
             }
-       }
+        }
+
+        // Registra reposição completa
+        [HttpPost("reposicao-completa")]
+        public async Task<IActionResult> RegistrarReposicaoCompletaAsync(
+            [FromBody]
+            ReposicaoCompletaDataTransferObject reposicaoCompletaDataTransferObject)
+        {
+            try
+            {
+                await estoqueService
+                    .RegistrarReposicaoCompletaAsync(
+                        reposicaoCompletaDataTransferObject);
+
+                return Ok(
+                    "Reposição registrada com sucesso.");
+            }
+            catch (Exception excecao)
+            {
+                return BadRequest(
+                    excecao.Message);
+            }
+        }
     }
 }
